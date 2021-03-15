@@ -6,7 +6,7 @@ import java.util.Map;
 
 public class Oplossing {
 	
-	private Map<String, Auto> toewijzingen;
+	private Map<String, ArrayList<Auto>> toewijzingen;
 	private int kost;
 	private ArrayList<Auto> reservaties;
 	private ArrayList<Auto> niet_toegewezen;
@@ -19,10 +19,11 @@ public class Oplossing {
 		this.niet_toegewezen = new ArrayList<>();
 	}
 	
-	public Map<String, Auto> getToewijzingen() {
+
+	public Map<String, ArrayList<Auto>> getToewijzingen() {
 		return toewijzingen;
 	}
-	public void setToewijzingen(Map<String, Auto> toewijzingen) {
+	public void setToewijzingen(Map<String, ArrayList<Auto>> toewijzingen) {
 		this.toewijzingen = toewijzingen;
 	}
 	public int getKost() {

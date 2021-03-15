@@ -44,12 +44,13 @@ public class Main {
 						String[] r1 = line.split(";");
 						
 						r.setId(r1[0]);
+						//System.out.println("ID: " + r1[0] + "\n");
 						r.setZone(r1[1]);
 						r.setDag(Integer.parseInt(r1[2]));
 						r.setStart(Integer.parseInt(r1[3]));
 						r.setDuur(Integer.parseInt(r1[4]));
 						r.setP1(Integer.parseInt(r1[6]));
-						r.setP2(Integer.parseInt(r1[7]));
+						r.setP2(Integer.parseInt(r1[7].replaceAll("\\D+","")));
 						ArrayList<String> a = new ArrayList<String>();
 						String[] r2 = r1[5].split(",");
 						
@@ -91,6 +92,11 @@ public class Main {
 			//System.out.print("++++++" + zones.get("z3") + "\n");  //find and returns the next complete token from this scanner  
 		}   
 		scan.close();  //closes the scanner  
+		
+		Algoritme algo = new Algoritme(autos, requests, zones, days);
+		algo.lokaalZoeken();
 	}
+	
+	
 
 }
