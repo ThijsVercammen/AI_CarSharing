@@ -57,7 +57,7 @@ public class Algoritme {
 		
 		// alle autos in zone 0 plaatsen
 		o.getToewijzingen().put("z0", autos);
-		o = valideerOplossing(o);
+		//o = valideerOplossing(o);
 		return o;	
 	}
 	
@@ -70,28 +70,24 @@ public class Algoritme {
 		boolean toegewezen = false;
 		for(Request r : requests) {
 			toegewezen = false;
-			//if(o.getToewijzingen().containsKey(r.getZone())) {
 			
-			// methode nog niet getest, kan zijn dat het crasht omdat o.getToewijzingen().get(r.getZone()) NULL teruggeeft
-			auto = getVrijeWagen(o.getToewijzingen().get(r.getZone()), r);
-			//System.out.println("TEST: " + auto.getNaam() + "\n");
-			
-			if(auto == null) {
+			if(o.getToewijzingen().get(r.getZone()) == null) {
 				// aangrenzende zones checken	
 				for(String zone : zones.get(r.getZone())) {
-					auto = getVrijeWagen(o.getToewijzingen().get(zone), r);
-					if(auto != null && !toegewezen) {
+					if(o.getToewijzingen().get(zone) != null && !toegewezen) {
+						auto = getVrijeWagen(o.getToewijzingen().get(zone), r);
 						o.setKost(o.getKost() + r.getP2());
 						o.getReservaties().add(auto);
 						toegewezen = true;
+						System.out.println("Aanliggend: "+ r.getId() + " - " + auto.getNaam() + "\n");
 					}
 				}
 			} else {
-				System.out.println("TOEGEWEZEN: "+ r.getId() + " - " + auto.getNaam() + "\n");
+				auto = getVrijeWagen(o.getToewijzingen().get(r.getZone()), r);
 				o.getReservaties().add(auto);
 				toegewezen = true;
+				System.out.println("Rechstreeks: "+ r.getId() + " - " + auto.getNaam() + "\n");
 			}
-		//}
 			if(!toegewezen) {
 				o.getNiet_toegewezen().add(auto);
 				o.setKost(o.getKost() + r.getP1());
@@ -102,7 +98,8 @@ public class Algoritme {
 	
 	// zoek vrije wagen in zone en wijzig tijd, geen gevonden return 0
 	public Auto getVrijeWagen(ArrayList<Auto> a, Request r) {
-		for(Auto auto : autos) {
+		for(Auto auto : a) {
+			//System.out.println(auto.getNaam() + " - " + auto.getWanneer_vrij() + " - " + ((r.getDag()*24*60) + r.getDuur()) +"\n" );
 			if(auto.getWanneer_vrij() <= (r.getDag()*24*60) + r.getDuur() /*&& r.getAutos().contains(auto)*/) {
 				for(String a2 : r.getAutos()) {
 					if(auto.getNaam().equals(a2)) {
