@@ -94,7 +94,8 @@ public class Main {
 		scan.close();  //closes the scanner  
 		
 		Algoritme algo = new Algoritme(autos, requests, zones, days);
-		algo.lokaalZoeken();
+		Oplossing finaal = algo.lokaalZoeken();
+		finaal.printOplossing();
 	}
 	
 	

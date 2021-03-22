@@ -53,24 +53,32 @@ public class Oplossing {
 			//Totaal aantal lijnen van de output-file
 			int totaal = toewijzingen.size() + reservaties.size() + niet_toegewezen.size() + 3;
 			writer.write(totaal);
+			writer.println();
 			writer.write("+Vehicle assignments");
+			writer.println();
 			//Loop over hashmap met toewijzingen zone -> auto(s)
 			for (Map.Entry<String, ArrayList<Auto>> entry : toewijzingen.entrySet()) {
 				//Loop over auto(s) bij zone
 				for(Auto auto : entry.getValue()) {
 					writer.write(auto.getNaam()+";"+entry.getKey());
+					writer.println();
 				}
 			}
 			writer.write("+Assigned requests");
+			writer.println();
 			//Loop over toegewezen reservaties
 			for(Request reserv : reservaties) {
 				writer.write(reserv.getId()+";"+reserv.getresauto());
+				writer.println();
 			}
 			writer.write("+Unassigned requests");
+			writer.println();
 			//Loop over niet toegewezen reservaties
 			for(Request n_reserv : niet_toegewezen) {
 				writer.write(n_reserv.getId());
+				writer.println();
 			}
+			writer.close();
 			
 			
 		
