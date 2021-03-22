@@ -21,48 +21,69 @@ public class Algoritme {
 
 	public void lokaalZoeken() {
 		int k = 0;
-		Oplossing o1 = startOplossing();
-		o1 = valideerOplossing(o1);
-		Oplossing best_o = o1;
-		int best_cost = o1.getKost();
+		Oplossing o = startOplossing();
+		o = valideerOplossing(o);
+		Oplossing best_o = o;
+		int best_cost = o.getKost();
+		System.out.println("KOST: " + o.getKost() +"\n");
+		System.out.println("------------------------------------------------" +"\n");
 		
 		// TODO - while aanpassen aan stop voorwaarden
-//		while(k<10) {
+		while(k<10) {
 			// TODO selecteer nieuwe oplossing (methode is leeg)
-//			Oplossing o2 = selecteerOplossing();
-//			o2 = valideerOplossing(o2);
+			o = selecteerOplossing(best_o);
+			o = valideerOplossing(o);
 			
 			//TODO check dat element voldoet aan de selectie criteria
 			
-//			if(o2.getKost() < best_cost) {
-//				best_o = o2;
-//				best_cost = o2.getKost();
-//			}
+			if(o.getKost() < best_cost) {
+				best_o = o;
+				best_cost = o.getKost();
+			}
 			
 			// TODO - check of stopvoorwaarden zijn voldaan
 			
-//			k = k+1;
-//		}
+			k = k+1;
+			System.out.println("KOST: " + o.getKost() +"\n");
+			System.out.println("------------------------------------------------" +"\n");
+		}
 		
 		System.out.println("KOST: " + best_cost +"\n");
-		/*
-		for(Auto a1 : o1.getReservaties()) {
-			System.out.println("RESERVATIE: " + a1.getNaam()+"\n");
-		}
-		*/
 	}
 	
 	public Oplossing startOplossing() {
-		Oplossing o = new Oplossing();
-		
+		Oplossing o = new Oplossing();		
 		// alle autos in zone 0 plaatsen
-		o.getToewijzingen().put("z0", autos);
-		//o = valideerOplossing(o);
+		o.getToewijzingen().put("z0", this.autos);
+		for(int i = 1; i<zones.keySet().size(); i++) {
+			o.getToewijzingen().put("z"+i, new ArrayList<Auto>());
+		}
 		return o;	
 	}
 	
-	public Oplossing selecteerOplossing() {
-		return null;	
+	public Oplossing selecteerOplossing(Oplossing o1) {
+		Oplossing o = o1;
+		o.setKost(0);
+		//generate random number between 0 and 5 (5 excluded)
+		int max = zones.keySet().size();
+		int r1 = (int) (Math.random() * ( max ));
+		while(o.getToewijzingen().get("z"+r1).size() <= 0) {
+			r1 =  (int) (Math.random() * ( max ));
+		}
+		Auto a1 = o.getToewijzingen().get("z"+r1).get(0);
+
+		o.getToewijzingen().get("z"+r1).remove(0);
+		
+		int r2 =  (int) (Math.random() * ( max ));
+		while(r1 == r2) {
+			r2 = (int) (Math.random() * ( max ));
+		}
+		
+		o.getToewijzingen().get("z"+r2).add(a1);
+
+		
+		System.out.println("RANDOM: " + r1 + " - " + r2 + "\n");
+		return o;	
 	}
 	
 	public Oplossing valideerOplossing(Oplossing o) {
@@ -71,25 +92,29 @@ public class Algoritme {
 		for(Request r : requests) {
 			toegewezen = false;
 			
-			if(o.getToewijzingen().get(r.getZone()) == null) {
+			if(o.getToewijzingen().get(r.getZone()).size() <= 0) {
 				// aangrenzende zones checken	
 				for(String zone : zones.get(r.getZone())) {
-					if(o.getToewijzingen().get(zone) != null && !toegewezen) {
-						auto = getVrijeWagen(o.getToewijzingen().get(zone), r);
+					auto = getVrijeWagen(o.getToewijzingen().get(zone), r);
+					if(auto != null && !toegewezen) {
+						//auto = getVrijeWagen(o.getToewijzingen().get(zone), r);
 						o.setKost(o.getKost() + r.getP2());
-						o.getReservaties().add(auto);
+						o.getReservaties().add(r);
 						toegewezen = true;
 						System.out.println("Aanliggend: "+ r.getId() + " - " + auto.getNaam() + "\n");
 					}
 				}
 			} else {
 				auto = getVrijeWagen(o.getToewijzingen().get(r.getZone()), r);
-				o.getReservaties().add(auto);
-				toegewezen = true;
-				System.out.println("Rechstreeks: "+ r.getId() + " - " + auto.getNaam() + "\n");
+				if(auto != null) {
+					o.getReservaties().add(r);
+					toegewezen = true;
+					System.out.println("Rechstreeks: "+ r.getId() + " - " + auto.getNaam() +"\n");
+				}
+				
 			}
 			if(!toegewezen) {
-				o.getNiet_toegewezen().add(auto);
+				o.getNiet_toegewezen().add(r);
 				o.setKost(o.getKost() + r.getP1());
 			}
 		}
@@ -98,9 +123,11 @@ public class Algoritme {
 	
 	// zoek vrije wagen in zone en wijzig tijd, geen gevonden return 0
 	public Auto getVrijeWagen(ArrayList<Auto> a, Request r) {
+		if(a == null) {
+			return null;
+		}
 		for(Auto auto : a) {
-			//System.out.println(auto.getNaam() + " - " + auto.getWanneer_vrij() + " - " + ((r.getDag()*24*60) + r.getDuur()) +"\n" );
-			if(auto.getWanneer_vrij() <= (r.getDag()*24*60) + r.getDuur() /*&& r.getAutos().contains(auto)*/) {
+			if(auto.getWanneer_vrij() <= (r.getDag()*24*60) + r.getDuur()) {
 				for(String a2 : r.getAutos()) {
 					if(auto.getNaam().equals(a2)) {
 						auto.setWanneer_vrij((r.getDag()*24*60) + r.getDuur() + r.getStart());
