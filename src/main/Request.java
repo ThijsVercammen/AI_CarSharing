@@ -11,6 +11,7 @@ public class Request {
 	private ArrayList<String> autos;
 	private int p1;
 	private int p2;
+	private String toegewezenauto;
 	
 	
 	public Request() {
@@ -74,6 +75,12 @@ public class Request {
 	}
 	public void setP2(int p2) {
 		this.p2 = p2;
+	}
+	public void setresauto(String auto) {
+		this.toegewezenauto = auto;
+	}
+	public String getresauto() {
+		return toegewezenauto;
 	}
 	
 	
