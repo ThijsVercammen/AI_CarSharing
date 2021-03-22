@@ -19,17 +19,17 @@ public class Algoritme {
 		this.days = days;
 	}
 
-	public void lokaalZoeken() {
+	public Oplossing lokaalZoeken() {
 		int k = 0;
 		Oplossing o = startOplossing();
 		o = valideerOplossing(o);
 		Oplossing best_o = o;
 		int best_cost = o.getKost();
-		System.out.println("KOST: " + o.getKost() +"\n");
-		System.out.println("------------------------------------------------" +"\n");
+		//System.out.println("KOST: " + o.getKost() +"\n");
+		//System.out.println("------------------------------------------------" +"\n");
 		
 		// TODO - while aanpassen aan stop voorwaarden
-		while(k<10) {
+		while(k<100000) {
 			// TODO selecteer nieuwe oplossing (methode is leeg)
 			o = selecteerOplossing(best_o);
 			o = valideerOplossing(o);
@@ -44,11 +44,12 @@ public class Algoritme {
 			// TODO - check of stopvoorwaarden zijn voldaan
 			
 			k = k+1;
-			System.out.println("KOST: " + o.getKost() +"\n");
-			System.out.println("------------------------------------------------" +"\n");
+			//System.out.println("KOST: " + o.getKost() +"\n");
+			//System.out.println("------------------------------------------------" +"\n");
 		}
 		
 		System.out.println("KOST: " + best_cost +"\n");
+		return best_o;
 	}
 	
 	public Oplossing startOplossing() {
@@ -82,7 +83,7 @@ public class Algoritme {
 		o.getToewijzingen().get("z"+r2).add(a1);
 
 		
-		System.out.println("RANDOM: " + r1 + " - " + r2 + "\n");
+		//System.out.println("RANDOM: " + r1 + " - " + r2 + "\n");
 		return o;	
 	}
 	
@@ -101,7 +102,7 @@ public class Algoritme {
 						o.setKost(o.getKost() + r.getP2());
 						o.getReservaties().add(r);
 						toegewezen = true;
-						System.out.println("Aanliggend: "+ r.getId() + " - " + auto.getNaam() + "\n");
+						//System.out.println("Aanliggend: "+ r.getId() + " - " + auto.getNaam() + "\n");
 					}
 				}
 			} else {
@@ -109,7 +110,7 @@ public class Algoritme {
 				if(auto != null) {
 					o.getReservaties().add(r);
 					toegewezen = true;
-					System.out.println("Rechstreeks: "+ r.getId() + " - " + auto.getNaam() +"\n");
+					//System.out.println("Rechstreeks: "+ r.getId() + " - " + auto.getNaam() +"\n");
 				}
 				
 			}
