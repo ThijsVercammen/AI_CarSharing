@@ -29,7 +29,7 @@ public class Algoritme {
 		//System.out.println("------------------------------------------------" +"\n");
 		
 		// TODO - while aanpassen aan stop voorwaarden
-		while(k<100000) {
+		while(k<1000000) {
 			// TODO selecteer nieuwe oplossing (methode is leeg)
 			o = selecteerOplossing(best_o);
 			o = valideerOplossing(o);
@@ -55,15 +55,19 @@ public class Algoritme {
 	public Oplossing startOplossing() {
 		Oplossing o = new Oplossing();		
 		// alle autos in zone 0 plaatsen
-		o.getToewijzingen().put("z0", this.autos);
-		for(int i = 1; i<zones.keySet().size(); i++) {
-			o.getToewijzingen().put("z"+i, new ArrayList<Auto>());
+		o.getToewijzingen().put("z1", this.autos);
+		for(int i = 0; i<zones.keySet().size(); i++) {
+			if(i != 1) {
+				o.getToewijzingen().put("z"+i, new ArrayList<Auto>());
+			}
+			
 		}
 		return o;	
 	}
 	
 	public Oplossing selecteerOplossing(Oplossing o1) {
-		Oplossing o = o1;
+		Oplossing o = new Oplossing();
+		o.setToewijzingen(o1.getToewijzingen());
 		o.setKost(0);
 		//generate random number between 0 and 5 (5 excluded)
 		int max = zones.keySet().size();
@@ -100,6 +104,7 @@ public class Algoritme {
 					if(auto != null && !toegewezen) {
 						//auto = getVrijeWagen(o.getToewijzingen().get(zone), r);
 						o.setKost(o.getKost() + r.getP2());
+						r.setresauto(auto.getNaam());
 						o.getReservaties().add(r);
 						toegewezen = true;
 						//System.out.println("Aanliggend: "+ r.getId() + " - " + auto.getNaam() + "\n");
@@ -108,6 +113,7 @@ public class Algoritme {
 			} else {
 				auto = getVrijeWagen(o.getToewijzingen().get(r.getZone()), r);
 				if(auto != null) {
+					r.setresauto(auto.getNaam());
 					o.getReservaties().add(r);
 					toegewezen = true;
 					//System.out.println("Rechstreeks: "+ r.getId() + " - " + auto.getNaam() +"\n");
