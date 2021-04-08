@@ -27,8 +27,12 @@ public class Oplossing {
 	public Map<String, ArrayList<Auto>> getToewijzingen() {
 		return toewijzingen;
 	}
-	public void setToewijzingen(Map<String, ArrayList<Auto>> toewijzingen) {
-		this.toewijzingen = toewijzingen;
+	public void setToewijzingen(Map<String, ArrayList<Auto>> t) {
+		HashMap<String, ArrayList<Auto>> h = new HashMap<>();
+		for(String s : t.keySet()) {
+			h.put(s, new ArrayList<>(t.get(s)));
+		}
+		this.toewijzingen = h;
 	}
 	public int getKost() {
 		return kost;

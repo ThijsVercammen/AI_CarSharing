@@ -13,14 +13,12 @@ public class Main {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		File f = new File(args[0]);
+		int totalTime  = Integer.parseInt(args[1]);
 		Scanner scan = null;
 		ArrayList<Auto> autos = new ArrayList<Auto>();
 		ArrayList<Request> requests = new ArrayList<Request>();
 		Map<String, ArrayList<String>> zones = new HashMap<>();
 		int days = 0;
-		
-		// check if file exists
-		//System.out.println(f.exists());
 		
 		try {
 			scan = new Scanner(f);
@@ -36,7 +34,6 @@ public class Main {
 				String[] word = line.split(": ");
 				
 				if(word[0].equals("+Requests")) {
-					//TODO
 					for (int i = 0; i< Integer.parseInt(word[1].replaceAll("\\D+","")); i++) {
 						Request r = new Request();
 						
@@ -44,7 +41,6 @@ public class Main {
 						String[] r1 = line.split(";");
 						
 						r.setId(r1[0]);
-						//System.out.println("ID: " + r1[0] + "\n");
 						r.setZone(r1[1]);
 						r.setDag(Integer.parseInt(r1[2]));
 						r.setStart(Integer.parseInt(r1[3]));
@@ -89,12 +85,11 @@ public class Main {
 					days = Integer.parseInt(word[1].replaceAll("\\D+",""));
 				}
 			}
-			//System.out.print("++++++" + zones.get("z3") + "\n");  //find and returns the next complete token from this scanner  
 		}   
 		scan.close();  //closes the scanner  
 		
 		Algoritme algo = new Algoritme(autos, requests, zones, days);
-		Oplossing finaal = algo.lokaalZoeken();
+		Oplossing finaal = algo.lokaalZoeken(totalTime);
 		finaal.printOplossing();
 	}
 	
