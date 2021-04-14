@@ -67,9 +67,8 @@ public class Oplossing {
 	}
 	public void printOplossing(String sol) {
 		try (PrintWriter writer = new PrintWriter(new File(sol))) {
-			//Totaal aantal lijnen van de output-file
-			int totaal = toewijzingen.size() + reservaties.size() + niet_toegewezen.size() + 3;
-			writer.write(totaal);
+			//Cost-score algoritme
+			writer.write(Integer.toString(kost));
 			writer.println();
 			writer.write("+Vehicle assignments");
 			writer.println();
