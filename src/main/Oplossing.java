@@ -52,8 +52,8 @@ public class Oplossing {
 	public void setNiet_toegewezen(ArrayList<Request> niet_toegewezen) {
 		this.niet_toegewezen = niet_toegewezen;
 	}
-	public void printOplossing() {
-		try (PrintWriter writer = new PrintWriter(new File("oplossing.csv"))) {
+	public void printOplossing(String sol) {
+		try (PrintWriter writer = new PrintWriter(new File(sol))) {
 			//Totaal aantal lijnen van de output-file
 			int totaal = toewijzingen.size() + reservaties.size() + niet_toegewezen.size() + 3;
 			writer.write(totaal);

@@ -13,7 +13,8 @@ public class Main {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		File f = new File(args[0]);
-		int totalTime  = Integer.parseInt(args[1]);
+		String sol = args[1];
+		int totalTime  = Integer.parseInt(args[2]);
 		Scanner scan = null;
 		ArrayList<Auto> autos = new ArrayList<Auto>();
 		ArrayList<Request> requests = new ArrayList<Request>();
@@ -90,7 +91,7 @@ public class Main {
 		
 		Algoritme algo = new Algoritme(autos, requests, zones, days);
 		Oplossing finaal = algo.lokaalZoeken(totalTime);
-		finaal.printOplossing();
+		finaal.printOplossing(sol);
 	}
 	
 	
