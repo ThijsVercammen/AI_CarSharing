@@ -44,7 +44,14 @@ public class Oplossing {
 		return reservaties;
 	}
 	public void setReservaties(ArrayList<Request> reservaties) {
-		this.reservaties = reservaties;
+		
+		ArrayList<Request> r = new ArrayList<Request>();
+		for(Request req : reservaties) {
+			Request r1 = new Request(req.getId(), req.getZone(), req.getDag(), req.getStart(), req.getDuur(), req.getAutos(), req.getP1(), req.getP2());
+			r1.setresauto(req.getresauto());
+			r.add(r1);
+		}
+		this.reservaties = r;
 	}
 	public ArrayList<Request> getNiet_toegewezen() {
 		return niet_toegewezen;

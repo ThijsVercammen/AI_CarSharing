@@ -43,6 +43,12 @@ public class Auto {
 			if(getReservaties().get(req).getStarttijd() <= eind && getReservaties().get(req).getEindtijd() >= eind) {
 				return false;
 			}
+			if(getReservaties().get(req).getStarttijd() >= start && getReservaties().get(req).getStarttijd() <= eind) {
+				return false;
+			}
+			if(getReservaties().get(req).getEindtijd() >= start && getReservaties().get(req).getEindtijd() <= eind) {
+				return false;
+			}
 		}
 		return true;
 	}

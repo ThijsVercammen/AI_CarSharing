@@ -3,10 +3,20 @@ package main;
 public class Reservatie {
 	private int starttijd;
 	private int eindtijd;
+	private Request request;
 	
-	public Reservatie(int starttijd, int eindtijd) {
+	public Request getRequest() {
+		return request;
+	}
+
+	public void setRequest(Request request) {
+		this.request = request;
+	}
+
+	public Reservatie(int starttijd, int eindtijd, Request request) {
 		this.starttijd = starttijd;
 		this.eindtijd = eindtijd;
+		this.request = request;
 	}
 	
 	public int getStarttijd() {
