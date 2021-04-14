@@ -52,6 +52,19 @@ public class Oplossing {
 	public void setNiet_toegewezen(ArrayList<Request> niet_toegewezen) {
 		this.niet_toegewezen = niet_toegewezen;
 	}
+	public Request getHoogsteKostRequest(Auto a) {
+		Request hoogste = this.niet_toegewezen.get(0);
+		for(int i = 1; i<this.niet_toegewezen.size(); i++) {
+			for(String auto : this.niet_toegewezen.get(i).getAutos()) {
+				if(a.getNaam().equals(auto)) {
+					if(hoogste.getP1()<this.niet_toegewezen.get(i).getP1()) {
+						hoogste = this.niet_toegewezen.get(i);
+					}
+				}
+			}
+		}
+		return hoogste;
+	}
 	public void printOplossing(String sol) {
 		try (PrintWriter writer = new PrintWriter(new File(sol))) {
 			//Totaal aantal lijnen van de output-file
