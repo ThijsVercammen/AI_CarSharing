@@ -21,23 +21,28 @@ public class Algoritme {
 	}
 
 	public Oplossing lokaalZoeken(int totalTime) {
+		// Haal starttijd op
 		long start = System.currentTimeMillis();
+		// Bereken einddtijd
 		long end = start + 1000*totalTime;
 		int tot = 0;
 		
+		//Creëer initiële oplossing
 		Oplossing o = startOplossing();
+		//Itereer over requests om te zien welke kunnen toegewezen worden
 		o = valideerOplossing(o);
+		//Creëer nieuwe beste oplossing
 		Oplossing best_o = new Oplossing();
 		
-		//zet start oplossing als beste oplossing
+		//Wijs start oplossing als beste oplossing toe
 		best_o.setKost(o.getKost());
 		best_o.setNiet_toegewezen(new ArrayList<Request>(o.getNiet_toegewezen()));
 		best_o.setReservaties(o.getReservaties());
 		best_o.setToewijzingen(o.getToewijzingen());
 		int best_cost = best_o.getKost();
 		
-		//zoek voor opgegeven tijd
-		while(/*tot < 100 */System.currentTimeMillis() < end) {
+		//Zoek tot eindtijd
+		while(System.currentTimeMillis() < end) {
 			//selecteer nieuwe oplossing
 			o = selecteerOplossing(o);
 			//valideer nieuwe oplossing
@@ -63,15 +68,7 @@ public class Algoritme {
 		
 		System.out.println("KOST: " + best_cost +"\n");
 		System.out.println("TOTAAL: " + tot +"\n");
-		/*
-		for(int i = 0; i< autos.size(); i++) {
-			System.out.println("-----------------------");
-			System.out.println("Auto: " + autos.get(i).getNaam());
-			for(String r : autos.get(i).getReservaties().keySet()) {
-				System.out.println(autos.get(i).getReservaties().get(r).getStarttijd() + " - " + autos.get(i).getReservaties().get(r).getEindtijd() + " - " + autos.get(i).getReservaties().get(r).getRequest().getId());
-			}
-		}
-		*/
+
 		return best_o;
 	}
 	
@@ -81,10 +78,12 @@ public class Algoritme {
 		// auto1 -> zone1, auto2 -> zone2, ...
 		for(int i = 0; i<zones.keySet().size(); i++) {
 			if(i<this.autos.size()) {
+				//Put car into zone
 				ArrayList<Auto> a = new ArrayList<Auto>();
 				a.add(this.autos.get(i));
 				o.getToewijzingen().put("z"+i, a);
 			} else {
+				//Out of cars, put empty arraylist of type Auto
 				o.getToewijzingen().put("z"+i, new ArrayList<Auto>());
 			}
 
@@ -93,18 +92,18 @@ public class Algoritme {
 	}
 	
 	public Oplossing selecteerOplossing(Oplossing o) {	
-		//System.out.println("-------------- " + o.getKost());
 		//genereer willekeurig nummer tussen 0 en het #zones
 		int max = zones.keySet().size();
-		int r1 = (int) (Math.random() * ( max ));
-		//als zone geen auto's heeft, genereer nieuw willekeurig nummer
-		while(o.getToewijzingen().get("z"+r1).size() <= 0) {
-			r1 =  (int) (Math.random() * ( max ));
-		}
+		int r1;
+		//Random zone die auto's bevat zoeken
+		do {
+			r1 = (int) (Math.random() * ( max ));
+		} while (o.getToewijzingen().get("z"+r1).size() <= 0);
 		
 		// haal de eerste auto uit de lijst
 		Auto a1 = o.getToewijzingen().get("z"+r1).get(0);
 		o.getToewijzingen().get("z"+r1).remove(0);
+		// Nieuwe reservatielijst aan auto toewijzen
 		a1.setReservaties(new HashMap<String, Reservatie>());
 		
 		
@@ -140,19 +139,22 @@ public class Algoritme {
 			r.setresauto(null);
 			toegewezen = false;
 			
-			//als er geen autos zijn in gevraagde zone, kijk in naburige zones
+			//Zijn er auto's aan zone request toegewezen?
 			if(o.getToewijzingen().get(r.getZone()).size() > 0) {
+				// Is er een vrije auto van diegene die in de zone staan?
 				auto = getVrijeWagen(o.getToewijzingen().get(r.getZone()), r);
-				if(auto != null && !toegewezen) {
+				// Zo ja: wijs toe!
+				if(auto != null) {
 					r.setresauto(auto.getNaam());
 					o.getReservaties().add(r);
 					toegewezen = true;
 				}
-			} else {
+			//Nog geen auto toegewezen (ofwel geen in zone, ofwel geen vrije in de zone)
+			} if(!toegewezen) {
 				// aangrenzende zones checken
 				for(String zone : zones.get(r.getZone())) {
-					// kijk of er nog een wagen beschikbaar is in de aanligende zone
-					if(!toegewezen) {
+					// kijk of er nog een wagen beschikbaar is in de aanliggende zone
+					
 						auto = getVrijeWagen(o.getToewijzingen().get(zone), r);
 						// wijs een wagen aan een request toe
 						if(auto != null) {
@@ -160,10 +162,9 @@ public class Algoritme {
 							r.setresauto(auto.getNaam());
 							o.getReservaties().add(r);
 							toegewezen = true;
+							break; //Wagen gevonden, break van zoeken in naburige zones
 						}
 					}
-					
-				}
 			}
 			
 			// bereken kost voor niet toegewezen request

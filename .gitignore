@@ -158,3 +158,5 @@ hs_err_pid*
 # Pyre type checker
 .pyre/
 oplossing.csv
+.settings/org.eclipse.jdt.core.prefs
+src/module-info.java

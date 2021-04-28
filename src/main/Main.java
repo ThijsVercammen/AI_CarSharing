@@ -11,29 +11,34 @@ public class Main {
 	
 
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
+		//Get input-filename
 		File f = new File(args[0]);
+		//Get output-filename
 		String sol = args[1];
+		//Get max. runningtime
 		int totalTime  = Integer.parseInt(args[2]);
+		//Create datastructures & filescanner
 		Scanner scan = null;
 		ArrayList<Auto> autos = new ArrayList<Auto>();
 		ArrayList<Request> requests = new ArrayList<Request>();
 		Map<String, ArrayList<String>> zones = new HashMap<>();
 		int days = 0;
 		
+		//Try to open file
 		try {
 			scan = new Scanner(f);
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		scan.useDelimiter("\n");   //sets the delimiter pattern  
 
+		//Read file and populate datastructures
 		while (scan.hasNext()) {  
 			String line = scan.next();
 			if(line.contains("+")) {
 				String[] word = line.split(": ");
 				
+				//Read requests
 				if(word[0].equals("+Requests")) {
 					for (int i = 0; i< Integer.parseInt(word[1].replaceAll("\\D+","")); i++) {
 						Request r = new Request();
@@ -59,7 +64,7 @@ public class Main {
 					}
 				}
 				
-				// add zones to hashmap
+				//Add zones to hashmap
 				if(word[0].equals("+Zones")) {
 					for (int i = 0; i< Integer.parseInt(word[1].replaceAll("\\D+","")); i++) {
 						zones.put("z"+i, new ArrayList<String>());
@@ -75,6 +80,7 @@ public class Main {
 					}
 				}
 				
+				//Read vehicles
 				if(word[0].equals("+Vehicles")) {
 					for (int i = 0; i< Integer.parseInt(word[1].replaceAll("\\D+","")); i++) {
 						line = scan.next();
@@ -82,6 +88,7 @@ public class Main {
 					}
 				}
 				
+				//Read in days
 				if(word[0].equals("+Days")) {
 					days = Integer.parseInt(word[1].replaceAll("\\D+",""));
 				}
@@ -89,8 +96,11 @@ public class Main {
 		}   
 		scan.close();  //closes the scanner  
 		
+		// Pass datastructure to new algoritm
 		Algoritme algo = new Algoritme(autos, requests, zones, days);
+		// Start the algoritm process and get back best found solution within time-constraint
 		Oplossing finaal = algo.lokaalZoeken(totalTime);
+		// Print solution into output-filename
 		finaal.printOplossing(sol);
 	}
 	
