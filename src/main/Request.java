@@ -28,6 +28,17 @@ public class Request {
 		this.p2 = p2;
 	}
 	
+	public Request(Request r) {
+		this.id = r.getId();
+		this.zone = r.getZone();
+		this.dag = r.getDag();
+		this.start = r.getStart();
+		this.duur = r.getDuur();
+		this.autos = r.getAutos();
+		this.p1 = r.getP1();
+		this.p2 = r.getP2();
+	}
+	
 	public String getId() {
 		return id;
 	}
@@ -83,5 +94,11 @@ public class Request {
 		return toegewezenauto;
 	}
 	
-	
+	public static ArrayList<Auto> cloneAutos(ArrayList<Auto> list) {
+	    ArrayList<Auto> clone = new ArrayList<Auto>(list.size());
+	    for (Auto auto : list) {
+	    	clone.add(new Auto(auto));
+	    }
+	    return clone;
+	}
 }

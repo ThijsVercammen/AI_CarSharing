@@ -3,6 +3,7 @@ package main;
 import java.util.HashMap;
 
 public class Auto {
+
 	private String naam;
 	private int wanneer_vrij;
 	private HashMap<String, Reservatie> reservaties;
@@ -10,6 +11,12 @@ public class Auto {
 	public Auto(String naam, int wanneer_vrij) {
 		this.naam = naam;
 		this.wanneer_vrij = wanneer_vrij;
+		this.reservaties = new HashMap<String, Reservatie>();
+	}
+	
+	public Auto(Auto auto) {
+		this.naam = auto.getNaam();
+		this.wanneer_vrij = auto.getWanneer_vrij();
 		this.reservaties = new HashMap<String, Reservatie>();
 	}
 	
