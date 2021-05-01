@@ -26,7 +26,10 @@ public class Algoritme {
 		// Bereken einddtijd
 		long end = start + 1000*totalTime;
 		int tot = 0;
-		//int geen_ver = 0;
+		// param meer auto's verplaats als lange tijd geen verbetering
+		int geen_ver = 0;
+		int aantal_autos = 1;
+		int max_geen_ver = 10000;
 		
 		//Creëer initiële oplossing
 		Oplossing o = startOplossing1();
@@ -34,67 +37,52 @@ public class Algoritme {
 		o = valideerOplossing(o);
 		//Creëer nieuwe beste oplossing
 		Oplossing best_o1 = new Oplossing();
-		//Oplossing best_o2 = new Oplossing();
 		
 		//Wijs start oplossing als beste oplossing toe
 		best_o1.setKost(o.getKost());
 		best_o1.setNiet_toegewezen(new ArrayList<Request>(o.getNiet_toegewezen()));
 		best_o1.setReservaties(o.getReservaties());
 		best_o1.setToewijzingen(o.getToewijzingen());
-		/*
-		best_o2.setKost(best_o1.getKost());
-		best_o2.setNiet_toegewezen(new ArrayList<Request>(best_o1.getNiet_toegewezen()));
-		best_o2.setReservaties(best_o1.getReservaties());
-		best_o2.setToewijzingen(best_o1.getToewijzingen());
-		*/
+
 		int best_cost = best_o1.getKost();
 		
 		//Zoek tot eindtijd
 		while(System.currentTimeMillis() < end) {
-			/*
-			if(geen_ver >= 10000) {
-				System.out.println("_____best opl 1 : " + best_o1.getKost() + "\n");
-				System.out.println("_____best opl 2 : " + best_o2.getKost() + "\n");
-				if(best_o2.getKost() > best_o1.getKost()) {
-					best_o2.setKost(best_o1.getKost());
-					best_o2.setNiet_toegewezen(new ArrayList<Request>(best_o1.getNiet_toegewezen()));
-					best_o2.setReservaties(best_o1.getReservaties());
-					best_o2.setToewijzingen(best_o1.getToewijzingen());
-				}
-				o = startOplossing();
+			
+			// als er een bepaalde tijd geen betere oplossing is, verplaatsen we meer auto's
+			if(geen_ver >= max_geen_ver) {
+				aantal_autos++;
+				o = selecteerOplossing(o, aantal_autos);
 				geen_ver = 0;
-				best_cost = 1000000;
-			} else {*/
+				max_geen_ver = max_geen_ver +5000;
+			} else {
 				//selecteer nieuwe oplossing
-				o = selecteerOplossing(o);
-			//}
+				o = selecteerOplossing(o, aantal_autos);
+			}
 			//valideer nieuwe oplossing
 			o = valideerOplossing(o);
 			
 			// vergelijk met nieuwe oplossing met beste oplossing
 			if(o.getKost() < best_cost) {
-				//System.out.println("KOST: " + o.getKost() + " - " + best_o1.getKost() + "\n");
 				best_o1.setKost(o.getKost());
 				best_o1.setNiet_toegewezen(new ArrayList<Request>(o.getNiet_toegewezen()));
 				best_o1.setReservaties(o.getReservaties());
 				best_o1.setToewijzingen(o.getToewijzingen());
 				best_cost = o.getKost();
-		//		geen_ver = 0;
+				geen_ver = 0;
+				aantal_autos = 1;
+				max_geen_ver = 10000;
 				
 			// behoud huidige beste oplossing			
 			} else {
-			//	geen_ver++;
+				geen_ver++;
 				o.setToewijzingen(best_o1.getToewijzingen());
 			}
 			
-
 			tot++;
 		}
-		
-	//	System.out.println("KOST: " + best_cost +"\n");
-	//	System.out.println("Aantal loops: " + tot +"\n");
-	//	System.out.println("best opl 1 : " + best_o1.getKost() + "\n");
-		//System.out.println("best opl 2 : " + best_o2.getKost() + "\n");
+	
+		System.out.println("Aantal loops: " + tot +"\n");
 		return best_o1;
 	}
 	
@@ -109,7 +97,6 @@ public class Algoritme {
 				//Out of cars, put empty arraylist of type Auto
 				o.getToewijzingen().put("z"+i, new ArrayList<Auto>());
 			}
-
 		}
 		return o;	
 	}
@@ -118,7 +105,6 @@ public class Algoritme {
 	public Oplossing startOplossing2() {
 		Oplossing o = new Oplossing();	
 		// onderstaande start oplossing werkt alleen als #zones > #autos
-		
 		// auto1 -> zone1, auto2 -> zone2, ...
 		for(int i = 0; i<zones.keySet().size(); i++) {
 			if(i<this.autos.size()) {
@@ -134,31 +120,35 @@ public class Algoritme {
 		return o;	
 	}
 	
-	public Oplossing selecteerOplossing(Oplossing o) {	
+	public Oplossing selecteerOplossing(Oplossing o, int aantal) {	
 		//genereer willekeurig nummer tussen 0 en het #zones
 		int max = zones.keySet().size();
 		int r1;
-		//Random zone die auto's bevat zoeken
-		do {
-			r1 = (int) (Math.random() * ( max ));
-		} while (o.getToewijzingen().get("z"+r1).size() <= 0);
-		
-		// haal de eerste auto uit de lijst
-		Auto a1 = o.getToewijzingen().get("z"+r1).get(0);
-		o.getToewijzingen().get("z"+r1).remove(0);
-		// Nieuwe reservatielijst aan auto toewijzen
-		a1.setReservaties(new HashMap<String, Reservatie>());
-		
-		//Voet auto to aan random zone
 		int r2;
-		do {
-			r2 = (int) (Math.random() * ( max ));
-		} while (r1 == r2);
-
-		o.getToewijzingen().get("z"+r2).add(a1);
 		
-		//Voeg auto toe aan zone van request met hoogste kost
-		//o.getToewijzingen().get(o.getHoogsteKostRequest(a1).getZone()).add(a1);
+		for(int i = 0; i<aantal; i++) {
+			//Random zone die auto's bevat zoeken
+			do {
+				r1 = (int) (Math.random() * ( max ));
+			} while (o.getToewijzingen().get("z"+r1).size() <= 0);
+		
+			// haal de eerste auto uit de lijst
+			Auto a1 = o.getToewijzingen().get("z"+r1).get(0);
+			o.getToewijzingen().get("z"+r1).remove(0);
+			// Nieuwe reservatielijst aan auto toewijzen
+			a1.setReservaties(new HashMap<String, Reservatie>());
+			
+			//Voegt auto to aan random zone
+			do {
+				r2 = (int) (Math.random() * ( max ));
+			} while (r1 == r2);
+	
+			o.getToewijzingen().get("z"+r2).add(a1);
+			
+			//Voeg auto toe aan zone van request met hoogste kost
+			//o.getToewijzingen().get(o.getHoogsteKostRequest(a1).getZone()).add(a1);
+		}
+		
 		// reset vorige validatie
 		o.setKost(0);
 		o.setNiet_toegewezen(new ArrayList<Request>());
@@ -242,8 +232,4 @@ public class Algoritme {
 		return null;
 	}
 }
-
-// wanneer auto vanaf dag 3 is gereserveerd, alle dagen ervoor ook gereserveerd
-// ander methode om een nieuwe opplossing te selecteren
-// eerst requesten toewijzen met hoogste kost
 

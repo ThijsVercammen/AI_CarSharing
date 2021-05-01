@@ -27,9 +27,13 @@ public class Main {
 		int totalTime  = Integer.parseInt(args[2]);
 		System.out.println("Time : " + args[2] + " seconds \n");
 		
+		//Random seed
+		int random_seed = Integer.parseInt(args[3]);
+		System.out.println("Random seed : " + random_seed + " (In dit algoritme maken we hier geen gebruik van)\n");
+		
 		//Get number of threads
-		int threads = Integer.parseInt(args[3]);
-		System.out.println("Aantal threads : " + args[3] + "\n");
+		int threads = Integer.parseInt(args[4]);
+		System.out.println("Aantal threads : " + threads + "\n");
 		if(threads < 1 || threads > 2) {
 			System.out.println("Aantal threads moet 1 of 2 zijn. Wordt nu met 1 thread uitgevoerd.\n");
 			threads = 1;
@@ -126,14 +130,16 @@ public class Main {
 			ArrayList<Auto> a2 = cloneAutos(autos);
 			ArrayList<Request> r2 = cloneRequest(requests);
 			Algoritme algo1 = new Algoritme(a2, r2, zones, days);
-			Future<Oplossing> fCall = ex.submit(new OplThread(algo1, totalTime));
+			Future<Oplossing> fCall = ex.submit(new OplThread(algo1, totalTime,l));
 			t1.add(fCall);
 		}
 		
 		//Get solution from threads
+		int th = 0;
 		for(Future<Oplossing> future : t1) {
+			th++;
 			o1 = future.get();
-			System.out.println("Thread : " + o1.getKost());
+			System.out.println("Thread " + th + " : " + o1.getKost());
 			if(o2 == null) {
 				o2 = future.get();
 			} else if(o1.getKost() < o2.getKost()) {

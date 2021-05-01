@@ -7,10 +7,12 @@ public class OplThread implements Callable<Oplossing>{
 	//Oplossing o;
 	Algoritme algo;
 	int tijd;
+	int id;
 	
-	public OplThread(Algoritme algo, int tijd) {
+	public OplThread(Algoritme algo, int tijd, int id) {
 		this.algo = algo;
 		this.tijd = tijd;
+		this.id = id;
 	}
 	
 	@Override
